@@ -1,0 +1,189 @@
+:root {
+    /* Paleta de Colores */
+    --primary-color: #0077B6; /* Azul Principal */
+    --secondary-color: #00B4D8; /* Azul Secundario */
+    --background-light: #F8F9FA; /* Fondo muy claro */
+    --text-dark: #212529; /* Texto oscuro */
+    --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); /* Sombra sutil */
+    --success-color: #2A9D8F; /* Verde Éxito */
+    --error-color: #E76F51; /* Rojo/Naranja Error */
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--background-light);
+    color: var(--text-dark);
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+}
+
+header {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 25px 0;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+header h1 {
+    margin: 0;
+    font-size: 1.8em;
+}
+
+.container {
+    max-width: 950px;
+    margin: 40px auto;
+    padding: 30px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: var(--card-shadow);
+}
+
+/* --- TÍTULOS DE SECCIÓN --- */
+
+h2 {
+    color: var(--primary-color);
+    font-size: 1.5em;
+    padding-bottom: 10px;
+    margin-top: 0;
+    border-bottom: 3px solid #E9ECEF;
+    margin-bottom: 25px;
+}
+
+/* --- CAMPOS DE ENTRADA (SCAN) --- */
+
+.input-group {
+    margin-bottom: 20px;
+}
+
+.input-group label {
+    display: block;
+    font-weight: 600; /* Ligeramente más grueso */
+    margin-bottom: 8px;
+    color: var(--text-dark);
+    font-size: 1em;
+}
+
+.input-group input[type="text"], 
+.input-group input[type="number"] {
+    width: 100%;
+    padding: 14px 15px; /* Más padding para que se vea más grande */
+    border: 1px solid #CED4DA;
+    border-radius: 6px;
+    box-sizing: border-box;
+    font-size: 1.1em;
+    transition: all 0.3s ease;
+}
+
+.input-group input:focus {
+    border-color: var(--secondary-color);
+    box-shadow: 0 0 0 3px rgba(0, 119, 182, 0.25); /* Resplandor sutil */
+    outline: none;
+}
+
+.quantity-control {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.quantity-control input {
+    width: 80px;
+    text-align: center;
+    padding: 10px;
+}
+
+/* --- PREVISUALIZACIÓN DE DATOS --- */
+
+.data-group {
+    display: flex;
+    gap: 25px;
+    margin-bottom: 30px;
+}
+
+.data-preview {
+    flex: 1;
+    background-color: #E9F6FC; /* Fondo ligeramente azulado */
+    padding: 20px;
+    border-left: 4px solid var(--primary-color); /* Línea de color destacada */
+    border-radius: 6px;
+}
+
+.data-preview h3 {
+    margin-top: 0;
+    color: var(--primary-color);
+    font-size: 1.1em;
+    margin-bottom: 10px;
+}
+
+.data-preview p {
+    margin: 8px 0;
+    font-size: 0.95em;
+}
+
+.data-preview span {
+    font-weight: 700; /* Más énfasis en los datos */
+    color: var(--text-dark);
+}
+
+/* --- BOTÓN DE REGISTRO --- */
+
+button {
+    background-color: var(--success-color); /* Verde Éxito */
+    color: white;
+    padding: 15px 25px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1.2em;
+    font-weight: 600;
+    width: 100%;
+    transition: background-color 0.3s ease, transform 0.1s;
+    margin-top: 10px;
+}
+
+button:hover {
+    background-color: #217D71;
+}
+
+button:active {
+    transform: translateY(1px); /* Efecto de click */
+}
+
+/* --- ÁREA DE ESTADO --- */
+
+.status-area {
+    margin-top: 30px;
+    padding: 20px;
+    border: 1px solid #CED4DA;
+    border-radius: 6px;
+    text-align: center;
+    background-color: var(--background-light);
+}
+
+#statusMessage {
+    font-weight: 700;
+    font-size: 1.1em;
+    color: var(--primary-color); /* Color por defecto */
+}
+
+/* Clases dinámicas para JavaScript */
+.status-success {
+    color: var(--success-color) !important;
+}
+
+.status-error {
+    color: var(--error-color) !important;
+}
+
+/* --- FOOTER --- */
+
+footer {
+    text-align: center;
+    padding: 15px 0;
+    color: #6C757D;
+    font-size: 0.85em;
+    border-top: 1px solid #E9ECEF;
+    margin-top: 30px;
+}

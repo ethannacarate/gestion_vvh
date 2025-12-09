@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Préstamo de Instrumental - Liceo</title>
+    <link rel="stylesheet" href="static/css/styles.css">
+</head>
+<body>
+
+    <header>
+        <h1>Gestión de Instrumental del Liceo</h1>
+    </header>
+
+    <main class="container">
+        
+        <section class="scan-area">
+            <h2>🔍 Escaneo de Datos</h2>
+            <div class="input-group">
+                <label for="codigoInstrumento">Código de Instrumento:</label>
+                <input type="text" id="codigoInstrumento" placeholder="Escanear Instrumento..." autofocus>
+            </div>
+            
+            <div class="input-group">
+                <label for="codigoPersona">Pasaporte Escolar/Cédula:</label>
+                <input type="text" id="codigoPersona" placeholder="Escanear Pasaporte/Cédula...">
+            </div>
+            
+            <div class="data-group">
+                <div class="data-preview">
+                    <h3>Datos de la Persona</h3>
+                    <p>Nombre: <span id="nombrePersona">---</span></p>
+                    <p>Rol: <span id="rolPersona">---</span></p>
+                </div>
+
+                <div class="data-preview">
+                    <h3>Datos del Instrumento</h3>
+                    <p>Instrumento: <span id="nombreInstrumento">---</span></p>
+                    <p>Código: <span id="codigoInstrumentoDisplay">---</span></p>
+                </div>
+            </div>
+
+            <div class="input-group quantity-control">
+                <label for="cantidad">Cantidad:</label>
+                <input type="number" id="cantidad" value="1" min="1">
+            </div>
+
+            <button id="registrarBtn" onclick="simularRegistro()">💾 Registrar Préstamo</button>
+        </section>
+
+        <section class="status-area">
+            <h2>Estado de la Operación</h2>
+            <p id="statusMessage">Esperando escaneos...</p>
+        </section>
+
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Proyecto Liceo</p>
+    </footer>
+
+    <script src="static/js/script.js"></script>
+</body>
+</html>
