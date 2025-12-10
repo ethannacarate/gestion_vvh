@@ -3,61 +3,138 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Préstamo de Instrumental - Liceo</title>
+    <title>Sistema de Gestión de Instrumental - Liceo</title>
     <link rel="stylesheet" href="static/css/styles.css">
 </head>
 <body>
 
-    <header>
-        <h1>Gestión de Instrumental del Liceo</h1>
-    </header>
-
-    <main class="container">
-        
-        <section class="scan-area">
-            <h2>🔍 Escaneo de Datos</h2>
-            <div class="input-group">
-                <label for="codigoInstrumento">Código de Instrumento:</label>
-                <input type="text" id="codigoInstrumento" placeholder="Escanear Instrumento..." autofocus>
-            </div>
+    <div id="login-view" class="view-login">
+        <div class="login-box">
+            <h1>Bienvenido al Sistema</h1>
+            <h2>Iniciar Sesión</h2>
             
             <div class="input-group">
-                <label for="codigoPersona">Pasaporte Escolar/Cédula:</label>
-                <input type="text" id="codigoPersona" placeholder="Escanear Pasaporte/Cédula...">
+                <label for="login-email">📧 Correo Electrónico:</label>
+                <input type="email" id="login-email" placeholder="ejemplo@liceo.edu" required>
+            </div>
+
+            <div class="input-group">
+                <label for="login-password">🔒 Contraseña:</label>
+                <input type="password" id="login-password" placeholder="••••••••" required>
             </div>
             
-            <div class="data-group">
-                <div class="data-preview">
-                    <h3>Datos de la Persona</h3>
-                    <p>Nombre: <span id="nombrePersona">---</span></p>
-                    <p>Rol: <span id="rolPersona">---</span></p>
+            <p id="login-error-message" class="error-message hidden">Credenciales inválidas.</p>
+
+            <button onclick="handleLogin()">➡️ Acceder</button>
+            
+            <p class="role-hint">El correo define tu rol (Director, Docente, etc.)</p>
+        </div>
+    </div>
+
+    <div id="main-app-view" class="view-app hidden">
+        <header>
+            <div class="header-content">
+                <h1>Gestión de Instrumental | Rol: <span id="current-role-display"></span></h1>
+                <button id="logout-button" onclick="logout()">Cerrar Sesión</button>
+            </div>
+        </header>
+
+        <main class="container">
+            
+            <section id="add-product-section" class="card hidden">
+                <h2>➕ Agregar Nuevo Instrumento</h2>
+                <div class="input-group">
+                    <label for="newCodigo">Código de Barras (Escaneado):</label>
+                    <input type="text" id="newCodigo" readonly>
+                </div>
+                <div class="input-group">
+                    <label for="newNombre">Nombre del Instrumento:</label>
+                    <input type="text" id="newNombre" placeholder="Ej: Microscopio Óptico #3">
+                </div>
+                <button onclick="registrarNuevoInstrumento()">✅ Guardar Instrumento</button>
+            </section>
+
+            <section id="loan-return-section" class="card">
+                <h2>🔍 Préstamo / Devolución</h2>
+                
+                <div class="input-group">
+                    <label for="codigoInstrumento">1° Código de Instrumento:</label>
+                    <input type="text" id="codigoInstrumento" placeholder="Escanear Instrumento..." autofocus onchange="handleInstrumentScan(this.value)">
+                </div>
+                
+                <div class="data-preview data-instrument">
+                    <h3>Instrumento: <span id="nombreInstrumento">---</span></h3>
+                    <p>Estado Actual: <span id="estadoInstrumento">---</span></p>
                 </div>
 
-                <div class="data-preview">
-                    <h3>Datos del Instrumento</h3>
-                    <p>Instrumento: <span id="nombreInstrumento">---</span></p>
-                    <p>Código: <span id="codigoInstrumentoDisplay">---</span></p>
+                <div id="loan-form" class="hidden">
+                    <div class="input-group">
+                        <label for="codigoPersona">2° Pasaporte Escolar/Cédula:</label>
+                        <input type="text" id="codigoPersona" placeholder="Escanear Pasaporte/Cédula..." onchange="handlePersonScan(this.value)">
+                    </div>
+
+                    <div class="data-preview data-person">
+                        <h3>Persona: <span id="nombrePersona">---</span></h3>
+                        <p>Rol: <span id="rolPersona">---</span></p>
+                    </div>
+
+                    <div class="control-group">
+                        <div class="input-group quantity-control">
+                            <label for="cantidad">Cantidad:</label>
+                            <input type="number" id="cantidad" value="1" min="1">
+                        </div>
+                        
+                        <div class="input-group checkbox-group">
+                            <input type="checkbox" id="autorizadoDocente">
+                            <label for="autorizadoDocente">Autorizado por el Docente</label>
+                        </div>
+
+                        <div class="input-group checkbox-group">
+                            <input type="checkbox" id="prestamoLargoPlazo">
+                            <label for="prestamoLargoPlazo">Préstamo Largo Plazo (Director)</label>
+                        </div>
+                    </div>
+                    
+                    <button id="registrarBtn" onclick="registrarPrestamo()">💾 Registrar Préstamo</button>
                 </div>
-            </div>
 
-            <div class="input-group quantity-control">
-                <label for="cantidad">Cantidad:</label>
-                <input type="number" id="cantidad" value="1" min="1">
-            </div>
+                <div id="return-button-container" class="hidden">
+                    <p class="status-return">Instrumento **OCUPADO** por <span id="loaned-by"></span>.</p>
+                    <button onclick="confirmarDevolucion()">↩️ Confirmar Devolución</button>
+                </div>
 
-            <button id="registrarBtn" onclick="simularRegistro()">💾 Registrar Préstamo</button>
-        </section>
+            </section>
 
-        <section class="status-area">
-            <h2>Estado de la Operación</h2>
-            <p id="statusMessage">Esperando escaneos...</p>
-        </section>
+            <section class="status-area">
+                <h2>✅ Estado de la Operación</h2>
+                <p id="statusMessage">Esperando operación...</p>
+            </section>
 
-    </main>
+            <section id="register-history" class="card">
+                <h2>📋 Historial de Préstamos</h2>
+                <div class="table-responsive">
+                    <table id="history-table">
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Instrumento</th>
+                                <th>Persona</th>
+                                <th>Cant.</th>
+                                <th>Auth Doc.</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </section>
 
-    <footer>
-        <p>&copy; 2025 Proyecto Liceo</p>
-    </footer>
+        </main>
+
+        <footer>
+            <p>&copy; 2025 Proyecto Liceo | Sistema de Gestión.</p>
+        </footer>
+    </div>
 
     <script src="static/js/script.js"></script>
 </body>
