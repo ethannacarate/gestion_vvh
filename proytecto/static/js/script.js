@@ -1,4 +1,34 @@
-// --- DATOS SIMULADOS ---
+// --- FUNCIONES DE PERSISTENCIA ---
+function guardarEnLocalStorage() {
+    try {
+        localStorage.setItem('dbInstrumentos', JSON.stringify(dbInstrumentos));
+        localStorage.setItem('dbPersonas', JSON.stringify(dbPersonas));
+        localStorage.setItem('dbPrestamos', JSON.stringify(dbPrestamos));
+        localStorage.setItem('dbDevoluciones', JSON.stringify(dbDevoluciones));
+    } catch (e) {
+        console.error("Error al guardar en localStorage:", e);
+        actualizarMensajeEstado("⚠️ No se pudo guardar localmente.", true);
+    }
+}
+
+function cargarDesdeLocalStorage() {
+    try {
+        const instrumentos = localStorage.getItem('dbInstrumentos');
+        const personas = localStorage.getItem('dbPersonas');
+        const prestamos = localStorage.getItem('dbPrestamos');
+        const devoluciones = localStorage.getItem('dbDevoluciones');
+
+        if (instrumentos) dbInstrumentos = JSON.parse(instrumentos);
+        if (personas) dbPersonas = JSON.parse(personas);
+        if (prestamos) dbPrestamos = JSON.parse(prestamos);
+        if (devoluciones) dbDevoluciones = JSON.parse(devoluciones);
+    } catch (e) {
+        console.error("Error al cargar desde localStorage:", e);
+        actualizarMensajeEstado("⚠️ Error al cargar datos guardados.", true);
+    }
+}
+
+// --- DATOS SIMULADOS (solo se usan si no hay datos en localStorage) ---
 const dbUsuarios = {
     'director@liceo.edu': { rol: 'director', password: '123' },
     'directivo@liceo.edu': { rol: 'directivo', password: '123' },
@@ -7,23 +37,17 @@ const dbUsuarios = {
     'estudiante@liceo.edu': { rol: 'estudiante', password: '123' }
 };
 
-let dbInstrumentos = [
-    { codigo: 'I-B001', nombre: 'Telescopio Refractor', categoria: 'otros', detalles: { estado: 'bueno' }, estado: 'Available' },
-    { codigo: 'I-B025', nombre: 'Kit de Microscopía', categoria: 'otros', detalles: { estado: 'regular' }, estado: 'Available' }
-];
-
-let dbPersonas = {
-    'P-1001': { nombre: 'Ana M. Pérez R.', rol: 'estudiante' },
-    'P-2002': { nombre: 'Juan A. López P.', rol: 'docente' },
-    'P-3003': { nombre: 'Laura M. Díaz S.', rol: 'directivo' },
-    'P-4004': { nombre: 'Carlos J. Soto V.', rol: 'director' }
-};
-
+// Inicializar bases de datos
+let dbInstrumentos = [];
+let dbPersonas = {};
 let dbPrestamos = [];
 let dbDevoluciones = [];
 let currentUser = null;
 let currentInstrumentCode = null;
 let currentPersonCode = null;
+
+// --- Cargar datos al inicio ---
+cargarDesdeLocalStorage();
 
 // --- UTILIDADES ---
 function toggleAddPersonSection(show) {
@@ -135,13 +159,29 @@ function registrarNuevaPersona() {
     }
 
     dbPersonas[codigo] = { nombre, rol };
+    guardarEnLocalStorage(); // ✅ GUARDAR
     actualizarMensajeEstado(`✅ Persona registrada: ${nombre} (${rol})`);
 
     toggleAddPersonSection(false);
-    
-    // ✅ Volver al formulario de préstamo con la persona recién registrada
-    document.getElementById('codigoPersona').value = codigo;
-    handlePersonScan(codigo);
+
+    const instrumentoInput = document.getElementById('codigoInstrumento').value.trim().toUpperCase();
+    const instrumento = dbInstrumentos.find(i => i.codigo === instrumentoInput && i.estado === 'Available');
+
+    if (instrumento) {
+        document.getElementById('codigoPersona').value = codigo;
+        handlePersonScan(codigo);
+        setTimeout(() => {
+            document.getElementById('loan-form').classList.remove('hidden');
+            document.getElementById('cantidad').focus();
+        }, 150);
+    } else {
+        document.getElementById('codigoInstrumento').value = '';
+        actualizarMensajeEstado(`✅ Persona registrada. Ahora escanee un instrumento.`);
+        setTimeout(() => {
+            document.getElementById('codigoInstrumento').focus();
+            document.getElementById('loan-return-section').classList.remove('hidden');
+        }, 150);
+    }
 }
 
 // --- CATEGORÍAS DE INSTRUMENTO ---
@@ -225,7 +265,7 @@ function toggleAlmacenamientoDual() {
     }
 }
 
-// --- GUARDAR INSTRUMENTO CON FLUJO CORREGIDO ---
+// --- GUARDAR INSTRUMENTO ---
 function guardarNuevoInstrumento() {
     const codigo = document.getElementById('newCodigo').value.trim().toUpperCase();
     const categoria = document.getElementById('categoriaInstrumento').value;
@@ -235,7 +275,6 @@ function guardarNuevoInstrumento() {
         return;
     }
 
-    // ✅ EVITAR CÓDIGOS DUPLICADOS
     if (dbInstrumentos.some(i => i.codigo === codigo)) {
         actualizarMensajeEstado("❌ Código de barras ya registrado en el sistema.", true);
         return;
@@ -366,7 +405,6 @@ function guardarNuevoInstrumento() {
         nombreVisual = `${tipoNombres[tipo]} ${marcaNombres[marca] || marca}`;
     }
 
-    // ✅ GUARDAR EL INSTRUMENTO
     dbInstrumentos.push({
         codigo: codigo,
         nombre: nombreVisual,
@@ -375,37 +413,25 @@ function guardarNuevoInstrumento() {
         estado: 'Available'
     });
 
-    // ✅ CERRAR MODAL
+    guardarEnLocalStorage(); // ✅ GUARDAR
     bootstrap.Modal.getInstance(document.getElementById('addInstrumentModal')).hide();
     actualizarMensajeEstado(`✅ Instrumento guardado: ${nombreVisual}`);
 
-    // ✅ OPCIONAL: VOLVER AUTOMÁTICAMENTE AL FORMULARIO DE PRÉSTAMO
     document.getElementById('codigoInstrumento').value = codigo;
-    
-    // Procesar instrumento inmediatamente
     handleInstrumentScan(codigo);
 
-    // Asegurar que el formulario de préstamo se muestre
     setTimeout(() => {
-        const loanForm = document.getElementById('loan-form');
-        if (loanForm.classList.contains('hidden')) {
-            loanForm.classList.remove('hidden');
-        }
-        // Enfocar campo de persona
-        const personaInput = document.getElementById('codigoPersona');
-        if (personaInput) personaInput.focus();
+        document.getElementById('loan-form').classList.remove('hidden');
+        document.getElementById('codigoPersona').focus();
     }, 150);
 }
 
 // --- ESCANEO DE INSTRUMENTO ---
 function handleInstrumentScan(codigo) {
-    // ✅ LIMPIAR EL CÓDIGO
-    const codigoLimpio = codigo.trim().toUpperCase();
     actualizarMensajeEstado("Procesando instrumento...");
-    currentInstrumentCode = codigoLimpio;
+    currentInstrumentCode = codigo.trim().toUpperCase();
     const instrumento = dbInstrumentos.find(i => i.codigo === currentInstrumentCode);
 
-    // Ocultar formularios temporales
     document.getElementById('loan-form').classList.add('hidden');
     document.getElementById('return-button-container').classList.add('hidden');
 
@@ -423,7 +449,6 @@ function handleInstrumentScan(codigo) {
         return;
     }
 
-    // ✅ Mostrar datos del instrumento
     document.getElementById('nombreInstrumento').textContent = instrumento.nombre;
     const estadoIcon = document.getElementById('estadoIcon');
     const estadoFisico = instrumento.detalles?.estado || 'desconocido';
@@ -447,9 +472,8 @@ function handleInstrumentScan(codigo) {
 
 // --- ESCANEO DE PERSONA ---
 function handlePersonScan(codigo) {
-    const codigoLimpio = codigo.trim().toUpperCase();
     actualizarMensajeEstado("Procesando persona...");
-    currentPersonCode = codigoLimpio;
+    currentPersonCode = codigo.trim().toUpperCase();
     const persona = dbPersonas[currentPersonCode];
 
     if (!persona) {
@@ -530,6 +554,7 @@ function registrarPrestamo() {
     dbPrestamos.push(nuevoPrestamo);
     instrumento.estado = 'Occupied';
 
+    guardarEnLocalStorage(); // ✅ GUARDAR
     actualizarMensajeEstado(`✅ Préstamo registrado exitosamente.`);
     resetMainForm();
     loadActiveLoans();
@@ -552,6 +577,7 @@ function confirmarDevolucion() {
     const inst = dbInstrumentos.find(i => i.codigo === currentInstrumentCode);
     if (inst) inst.estado = 'Available';
 
+    guardarEnLocalStorage(); // ✅ GUARDAR
     actualizarMensajeEstado(`✅ Devolución registrada exitosamente.`);
     resetMainForm();
     loadActiveLoans();
