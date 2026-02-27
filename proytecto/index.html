@@ -3,30 +3,38 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Sistema de Gestión de Instrumental - Liceo</title>
+    <title>Sistema de Gestión - Liceo Comercial Vate Vicente Huidobro</title>
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
     <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <!-- Google Fonts: Inter + Playfair Display -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
     <!-- Estilos personalizados -->
     <link rel="stylesheet" href="static/css/styles.css" />
 </head>
 <body>
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <!-- Navbar institucional -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">Sistema Liceo</a>
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-graduation-cap me-2"></i>
+                <span class="d-none d-md-inline">Liceo Comercial</span>
+                <span class="d-block d-md-inline">Vate Vicente Huidobro</span>
+            </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="/">Inicio</a>
+                        <a class="nav-link active" href="/">Inicio</a>
                     </li>
-                    <li id="nav-agregar-db" class="nav-item">
-                        <a class="nav-link" href="/admin/agregar-nuevo">
-                            <i class="fa-solid fa-square-plus"></i> Agregar a DB
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="abrirModalArticulo('')">
+                            <i class="fas fa-plus-circle me-1"></i> Nuevo Artículo
                         </a>
                     </li>
                 </ul>
@@ -34,345 +42,305 @@
         </div>
     </nav>
 
-    <!-- Vista de Login -->
+    <!-- Vista de Login institucional -->
     <div id="login-view" class="view-login">
         <div class="login-box">
-            <h1>Bienvenido al Sistema</h1>
-            <h2>Iniciar Sesión</h2>
-
-            <div class="input-group">
-                <label for="login-email">Correo Electrónico:</label>
-                <input type="email" id="login-email" placeholder="Ingrese su correo institucional" required />
+            <div class="text-center mb-4">
+                <div class="logo-badge">
+                    <i class="fas fa-laptop-code"></i>
+                </div>
+                <h1 class="institution-name">Liceo Comercial</h1>
+                <h2 class="institution-subname">Vate Vicente Huidobro</h2>
+                <p class="institution-motto">Formando Profesionales con Excelencia</p>
             </div>
 
-            <div class="input-group">
-                <label for="login-password">Contraseña:</label>
-                <input type="password" id="login-password" placeholder="••••••••" required />
+            <div class="input-group mb-3">
+                <label for="login-email">Correo Institucional</label>
+                <div class="input-with-icon">
+                    <i class="fas fa-envelope"></i>
+                    <input type="email" id="login-email" class="form-control" placeholder="nombre@liceovvh.cl" required />
+                </div>
             </div>
 
-            <p id="login-error-message" class="error-message hidden">Credenciales incorrectas. Inténtelo nuevamente.</p>
+            <div class="input-group mb-4">
+                <label for="login-password">Contraseña</label>
+                <div class="input-with-icon">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="login-password" class="form-control" placeholder="••••••••" required />
+                </div>
+            </div>
 
-            <button type="button" onclick="handleLogin()">Acceder</button>
+            <p id="login-error-message" class="error-message hidden">Credenciales incorrectas.</p>
+
+            <button type="button" class="btn btn-primary w-100" onclick="handleLogin()">
+                <i class="fas fa-arrow-right me-2"></i>Acceder al Sistema
+            </button>
+            
+            <div class="institution-footer mt-4">
+                <p class="text-muted small">Sistema de Gestión Tecnológica | Antofagasta, Chile</p>
+            </div>
         </div>
     </div>
 
     <!-- Vista Principal -->
     <div id="main-app-view" class="view-app hidden">
-        <header>
-            <div class="header-content">
-                <h1>Gestión de Instrumental | Rol: <span id="current-role-display"></span></h1>
-                <button id="logout-button" type="button" onclick="logout()">Cerrar Sesión</button>
+        <header class="mb-4">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <div>
+                    <h2><i class="fas fa-cubes me-2"></i>Gestión de Recursos Tecnológicos</h2>
+                    <p class="text-muted mb-0">Liceo Comercial Vate Vicente Huidobro</p>
+                </div>
+                <button id="logout-button" type="button" class="btn btn-outline-secondary" onclick="logout()">
+                    <i class="fas fa-sign-out-alt me-1"></i> Cerrar Sesión
+                </button>
             </div>
         </header>
 
-        <main class="container mt-4">
-            <!-- Sección: Agregar Nueva Persona -->
-            <section id="add-person-section" class="card hidden">
-                <h2><i class="fas fa-user-plus"></i> Registrar Nueva Persona</h2>
-                <div class="input-group">
-                    <label for="newPersonaCodigo">Identificador Escaneado:</label>
-                    <input type="text" id="newPersonaCodigo" readonly />
-                </div>
-                <div class="input-group">
-                    <label for="newPersonaNombre">Nombre Completo:</label>
-                    <input type="text" id="newPersonaNombre" placeholder="Ej: Ana M. Pérez R." />
-                </div>
-                <div class="input-group">
-                    <label for="newPersonaRol">Rol:</label>
-                    <select id="newPersonaRol">
-                        <option value="estudiante">Estudiante</option>
-                        <option value="docente">Docente</option>
-                        <option value="directivo">Directivo</option>
-                        <option value="director">Director</option>
-                    </select>
-                </div>
-                <button type="button" onclick="registrarNuevaPersona()">Guardar Persona</button>
-            </section>
-
+        <main>
             <!-- Sección: Préstamo / Devolución -->
-            <section id="loan-return-section" class="card">
-                <h2><i class="fas fa-exchange-alt"></i> Préstamo / Devolución</h2>
-
-                <div class="input-group">
-                    <label for="codigoInstrumento">1. Código de Instrumento:</label>
-                    <input
-                        type="text"
-                        id="codigoInstrumento"
-                        placeholder="Escanear Instrumento..."
-                        autofocus
-                        onchange="handleInstrumentScan(this.value)"
-                    />
-                </div>
-
-                <div class="data-preview data-instrument">
-                    <h3>Instrumento: <span id="nombreInstrumento">---</span></h3>
-                    <p>Estado Actual: <span id="estadoInstrumento">---</span> <span id="estadoIcon"></span></p>
-                </div>
-
-                <div id="loan-form" class="hidden">
-                    <div class="input-group">
-                        <label for="codigoPersona">2. Pasaporte Escolar / Cédula:</label>
-                        <input
-                            type="text"
-                            id="codigoPersona"
-                            placeholder="Escanear Pasaporte o Cédula..."
-                            onchange="handlePersonScan(this.value)"
-                        />
+            <section class="card mb-4">
+                <div class="card-body">
+                    <div class="section-header">
+                        <h3 class="mb-0"><i class="fas fa-exchange-alt me-2"></i>Préstamo de Equipos</h3>
+                        <p class="text-muted mb-0">Escanea los códigos para registrar un préstamo</p>
                     </div>
-
-                    <div class="data-preview data-person">
-                        <h3>Persona: <span id="nombrePersona">---</span></h3>
-                        <p>Rol: <span id="rolPersona">---</span></p>
-                    </div>
-
-                    <div class="control-group">
-                        <div class="input-group quantity-control">
-                            <label for="cantidad">Cantidad:</label>
-                            <input type="number" id="cantidad" value="1" min="1" />
+                    
+                    <div class="row g-3 mt-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Código de Equipo Tecnológico</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-barcode"></i>
+                                <input
+                                    type="text"
+                                    id="codigoArticulo"
+                                    class="form-control form-control-lg"
+                                    placeholder="Escanear equipo..."
+                                    onchange="handleArticuloScan(this.value)"
+                                />
+                            </div>
                         </div>
-
-                        <!-- Autorización por docente -->
-                        <div class="input-group checkbox-group">
-                            <input type="checkbox" id="autorizadoDocente" onchange="toggleDocenteField()" />
-                            <label for="autorizadoDocente">Autorizado por Docente</label>
-                        </div>
-
-                        <div id="docente-field" class="input-group hidden">
-                            <label for="nombreDocente">Nombre del Docente Autorizante:</label>
-                            <input type="text" id="nombreDocente" placeholder="Ej: Prof. María González" />
-                        </div>
-
-                        <!-- Préstamo largo plazo (solo director) -->
-                        <div class="input-group checkbox-group">
-                            <input type="checkbox" id="prestamoLargoPlazo" onchange="toggleLargoPlazoField()" />
-                            <label for="prestamoLargoPlazo">Préstamo Largo Plazo</label>
-                        </div>
-
-                        <div id="largo-plazo-field" class="input-group hidden">
-                            <label for="duracionPrestamo">Duración del Préstamo (días):</label>
-                            <input type="number" id="duracionPrestamo" value="7" min="1" placeholder="Ej: 14" />
+                        <div class="col-md-6">
+                            <label class="form-label">Código de Estudiante/Docente</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-id-card"></i>
+                                <input
+                                    type="text"
+                                    id="codigoPersona"
+                                    class="form-control form-control-lg"
+                                    placeholder="Escanear credencial..."
+                                    onchange="handlePersonScan(this.value)"
+                                />
+                            </div>
                         </div>
                     </div>
 
-                    <button id="registrarBtn" type="button" onclick="registrarPrestamo()">Registrar Préstamo</button>
-                </div>
+                    <div id="articulo-data" class="mt-4 p-3 bg-light rounded hidden">
+                        <h5 class="mb-2">Equipo Tecnológico</h5>
+                        <h6 class="mb-2">Nombre: <span id="nombreArticulo">---</span></h6>
+                        <div class="d-flex gap-3">
+                            <span class="badge bg-success">Disponible</span>
+                            <span class="badge bg-info">Estado: <span id="estadoArticulo">Bueno</span></span>
+                        </div>
+                    </div>
 
-                <div id="return-button-container" class="hidden">
-                    <p class="status-return">
-                        Instrumento <strong>OCUPADO</strong> por <span id="loaned-by"></span>.
-                    </p>
-                    <button type="button" onclick="confirmarDevolucion()">Confirmar Devolución</button>
+                    <div id="persona-data" class="mt-3 p-3 bg-light rounded hidden">
+                        <h5 class="mb-2">Usuario</h5>
+                        <h6 class="mb-1">Nombre: <span id="nombrePersona">---</span></h6>
+                        <p class="mb-0">Rol: <span id="rolPersona">---</span></p>
+                    </div>
+
+                    <button id="registrarBtn" type="button" class="btn btn-success mt-4 w-100 hidden" onclick="registrarPrestamo()">
+                        <i class="fas fa-save me-2"></i>Registrar Préstamo
+                    </button>
                 </div>
             </section>
 
-            <!-- Área de estado -->
-            <section class="status-area">
-                <h2><i class="fas fa-info-circle"></i> Estado de la Operación</h2>
-                <p id="statusMessage">Esperando operación...</p>
-            </section>
-
-            <!-- Préstamos Activos -->
-            <section id="active-loans-section" class="card mt-4">
-                <div class="section-header">
-                    <h2><i class="fas fa-clock"></i> Préstamos Activos</h2>
-                    <div class="filters">
-                        <input type="text" id="filter-active-name" placeholder="Filtrar por nombre..." oninput="filterTable('active')" />
-                        <input type="date" id="filter-active-date" oninput="filterTable('active')" />
+            <!-- Historial -->
+            <section class="card">
+                <div class="card-body">
+                    <div class="section-header">
+                        <h3 class="mb-0"><i class="fas fa-history me-2"></i>Historial de Préstamos</h3>
+                        <p class="text-muted mb-0">Últimos registros del sistema</p>
                     </div>
-                </div>
-                <div class="table-responsive">
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-                                <th>Fecha</th>
-                                <th>Instrumento</th>
-                                <th>Estado</th>
-                                <th>Persona</th>
-                                <th>Cantidad</th>
-                                <th>Autorizado por</th>
-                                <th>Duración (días)</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody id="active-loans-body"></tbody>
-                    </table>
-                </div>
-            </section>
-
-            <!-- Historial de Devoluciones -->
-            <section id="returned-history-section" class="card mt-4">
-                <div class="section-header">
-                    <h2><i class="fas fa-check-circle"></i> Historial de Devoluciones</h2>
-                    <div class="filters">
-                        <input type="text" id="filter-returned-name" placeholder="Filtrar por nombre..." oninput="filterTable('returned')" />
-                        <input type="date" id="filter-returned-date" oninput="filterTable('returned')" />
+                    <div class="table-responsive mt-3">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th>Equipo</th>
+                                    <th>Usuario</th>
+                                    <th>Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody id="historial-body"></tbody>
+                        </table>
                     </div>
-                </div>
-                <div class="table-responsive">
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-                                <th>Fecha Devolución</th>
-                                <th>Instrumento</th>
-                                <th>Estado</th>
-                                <th>Persona</th>
-                                <th>Cantidad</th>
-                                <th>Autorizado por</th>
-                                <th>Duración (días)</th>
-                            </tr>
-                        </thead>
-                        <tbody id="returned-history-body"></tbody>
-                    </table>
                 </div>
             </section>
         </main>
 
-        <footer class="mt-5 py-3 text-center">
-            <p>&copy; 2025 Proyecto Liceo | Sistema de Gestión de Instrumental</p>
+        <footer class="text-center text-muted py-3 mt-4">
+            <div class="institution-footer">
+                <p class="mb-1"><strong>Liceo Comercial Vate Vicente Huidobro</strong></p>
+                <p class="mb-1">Formando Profesionales con Excelencia desde Antofagasta</p>
+                <p class="mb-0">© 2025 Sistema de Gestión Tecnológica | Todos los derechos reservados</p>
+            </div>
         </footer>
     </div>
 
-    <!-- Modal: Agregar Nuevo Instrumento -->
-    <div class="modal fade" id="addInstrumentModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
+    <!-- Modal: Agregar Nuevo Artículo -->
+    <div class="modal fade" id="addArticleModal" tabindex="-1">
+        <div class="modal-dialog modal-xl">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title"><i class="fas fa-plus-circle"></i> Agregar Nuevo Instrumento</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                <div class="modal-header border-0 pb-0">
+                    <div>
+                        <h3 class="modal-title fw-bold">
+                            <i class="fas fa-microchip me-2"></i>Nuevo Artículo Tecnológico
+                        </h3>
+                        <p class="text-muted mb-0">Registro de equipos del Liceo Comercial Vate Vicente Huidobro</p>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <div class="modal-body">
-                    <!-- Selección de categoría -->
-                    <div class="input-group mb-3">
-                        <label for="categoriaInstrumento">Categoría:</label>
-                        <select id="categoriaInstrumento" class="form-select" onchange="cambiarCategoria()">
-                            <option value="">Seleccione una categoría</option>
-                            <option value="computadora">Computadora</option>
-                            <option value="monitor">Monitor</option>
-                            <option value="periferico">Periférico</option>
-                        </select>
+                <div class="modal-body pt-0">
+                    <!-- Código -->
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Código de Barras Institucional</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-barcode"></i>
+                            <input type="text" id="newArticleCode" class="form-control form-control-lg" readonly />
+                        </div>
                     </div>
 
-                    <!-- Código (siempre visible) -->
-                    <div class="input-group mb-3">
-                        <label for="newCodigo">Código de Barras (Escaneado):</label>
-                        <input type="text" id="newCodigo" class="form-control" readonly />
+                    <!-- Categoría -->
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Categoría del Equipo</label>
+                        <p class="text-muted mb-3">Seleccione el tipo de equipo tecnológico</p>
+                        <div class="d-flex flex-wrap gap-2">
+                            <button type="button" class="btn category-btn" data-category="computadora">
+                                💻 Computadora
+                            </button>
+                            <button type="button" class="btn category-btn" data-category="monitor">
+                                🖥️ Monitor
+                            </button>
+                            <button type="button" class="btn category-btn" data-category="periferico">
+                                🎮 Periférico
+                            </button>
+                            <button type="button" class="btn category-btn" data-category="impresora">
+                                🖨️ Impresora
+                            </button>
+                            <button type="button" class="btn category-btn" data-category="tablet">
+                                📱 Tablet
+                            </button>
+                            <button type="button" class="btn category-btn" data-category="red">
+                                🌐 Red
+                            </button>
+                        </div>
                     </div>
 
+                    <!-- Formularios por categoría (igual que antes, manteniendo la estructura existente) -->
                     <!-- COMPUTADORA -->
-                    <div id="form-computadora" class="categoria-form hidden">
-                        <h6 class="mt-3 mb-3">Especificaciones de Computadora</h6>
-                        <div class="row g-2">
+                    <div id="form-computadora" class="category-form hidden">
+                        <div class="row g-3">
                             <div class="col-md-6">
-                                <label for="pcTipo">Tipo:</label>
-                                <select id="pcTipo" class="form-select">
+                                <label>Tipo de Computadora</label>
+                                <select class="form-select" id="pcTipo">
                                     <option value="">Seleccione</option>
-                                    <option value="all-in-one">All-in-One</option>
                                     <option value="laptop">Laptop</option>
-                                    <option value="desktop">Computador de Escritorio</option>
+                                    <option value="desktop">Desktop</option>
+                                    <option value="all-in-one">All-in-One</option>
+                                    <option value="servidor">Servidor</option>
                                 </select>
                             </div>
                             <div class="col-md-6">
-                                <label for="pcMarca">Marca:</label>
-                                <select id="pcMarca" class="form-select">
+                                <label>Marca</label>
+                                <select class="form-select" id="pcMarca">
                                     <option value="">Seleccione</option>
                                     <option value="dell">Dell</option>
                                     <option value="hp">HP</option>
                                     <option value="lenovo">Lenovo</option>
-                                    <option value="acer">Acer</option>
-                                    <option value="asus">ASUS</option>
                                     <option value="apple">Apple</option>
-                                    <option value="otros">Otros</option>
+                                    <option value="asus">ASUS</option>
+                                    <option value="acer">Acer</option>
+                                    <option value="msi">MSI</option>
+                                    <option value="razer">Razer</option>
                                 </select>
                             </div>
                             <div class="col-md-6">
-                                <label for="pcRAM">Memoria RAM:</label>
-                                <select id="pcRAM" class="form-select">
+                                <label>Procesador</label>
+                                <select class="form-select" id="pcProcesador">
                                     <option value="">Seleccione</option>
-                                    <option value="4 GB">4 GB</option>
-                                    <option value="8 GB">8 GB</option>
-                                    <option value="16 GB">16 GB</option>
-                                    <option value="32 GB">32 GB</option>
-                                    <option value="64 GB">64 GB</option>
+                                    <option value="intel-i3">Intel i3</option>
+                                    <option value="intel-i5">Intel i5</option>
+                                    <option value="intel-i7">Intel i7</option>
+                                    <option value="intel-i9">Intel i9</option>
+                                    <option value="amd-ryzen3">AMD Ryzen 3</option>
+                                    <option value="amd-ryzen5">AMD Ryzen 5</option>
+                                    <option value="amd-ryzen7">AMD Ryzen 7</option>
+                                    <option value="amd-ryzen9">AMD Ryzen 9</option>
+                                    <option value="apple-m1">Apple M1</option>
+                                    <option value="apple-m2">Apple M2</option>
                                 </select>
                             </div>
                             <div class="col-md-6">
-                                <label for="pcAlmacenamientoTipo">Tipo Almacenamiento:</label>
-                                <select id="pcAlmacenamientoTipo" class="form-select" onchange="toggleAlmacenamientoDual()">
+                                <label>RAM</label>
+                                <select class="form-select" id="pcRAM">
                                     <option value="">Seleccione</option>
-                                    <option value="SSD">SSD</option>
-                                    <option value="HDD">HDD</option>
-                                    <option value="SSD+HDD">SSD + HDD</option>
-                                </select>
-                            </div>
-                            <!-- SSD -->
-                            <div id="pcSSDGroup" class="col-md-6 hidden">
-                                <label for="pcSSDCap">Capacidad SSD:</label>
-                                <select id="pcSSDCap" class="form-select">
-                                    <option value="">Seleccione</option>
-                                    <option value="128 GB">128 GB</option>
-                                    <option value="256 GB">256 GB</option>
-                                    <option value="512 GB">512 GB</option>
-                                    <option value="1 TB">1 TB</option>
-                                    <option value="2 TB">2 TB</option>
-                                </select>
-                            </div>
-                            <!-- HDD -->
-                            <div id="pcHDDGroup" class="col-md-6 hidden">
-                                <label for="pcHDDCap">Capacidad HDD:</label>
-                                <select id="pcHDDCap" class="form-select">
-                                    <option value="">Seleccione</option>
-                                    <option value="500 GB">500 GB</option>
-                                    <option value="1 TB">1 TB</option>
-                                    <option value="2 TB">2 TB</option>
-                                    <option value="3 TB">3 TB</option>
-                                    <option value="4 TB">4 TB</option>
+                                    <option value="4GB">4 GB</option>
+                                    <option value="8GB">8 GB</option>
+                                    <option value="16GB">16 GB</option>
+                                    <option value="32GB">32 GB</option>
+                                    <option value="64GB">64 GB</option>
                                 </select>
                             </div>
                             <div class="col-md-6">
-                                <label for="pcProcesadorMarca">Marca Procesador:</label>
-                                <select id="pcProcesadorMarca" class="form-select" onchange="actualizarModelosProcesador()">
+                                <label>Almacenamiento</label>
+                                <select class="form-select" id="pcAlmacenamiento">
                                     <option value="">Seleccione</option>
-                                    <option value="intel">Intel</option>
-                                    <option value="amd">AMD</option>
-                                    <option value="apple">Apple (M1/M2)</option>
+                                    <option value="256GB-SSD">256 GB SSD</option>
+                                    <option value="512GB-SSD">512 GB SSD</option>
+                                    <option value="1TB-SSD">1 TB SSD</option>
+                                    <option value="1TB-HDD">1 TB HDD</option>
+                                    <option value="2TB-HDD">2 TB HDD</option>
+                                    <option value="512GB-SSD+1TB-HDD">512 GB SSD + 1 TB HDD</option>
                                 </select>
                             </div>
                             <div class="col-md-6">
-                                <label for="pcProcesadorModelo">Modelo:</label>
-                                <select id="pcProcesadorModelo" class="form-select">
-                                    <option value="">Seleccione marca primero</option>
-                                </select>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="pcSO">Sistema Operativo:</label>
-                                <select id="pcSO" class="form-select">
+                                <label>Sistema Operativo</label>
+                                <select class="form-select" id="pcSO">
                                     <option value="">Seleccione</option>
-                                    <option value="Windows 10">Windows 10</option>
-                                    <option value="Windows 11">Windows 11</option>
-                                    <option value="Linux">Linux</option>
-                                    <option value="macOS">macOS</option>
-                                    <option value="Sin sistema">Sin sistema</option>
+                                    <option value="windows11">Windows 11</option>
+                                    <option value="windows10">Windows 10</option>
+                                    <option value="macos">macOS</option>
+                                    <option value="linux">Linux</option>
+                                    <option value="sin-sistema">Sin sistema</option>
                                 </select>
                             </div>
-                            <!-- ✅ Estado general para computadora -->
-                            <div class="col-md-6">
-                                <label for="pcEstado">Estado del Equipo:</label>
-                                <select id="pcEstado" class="form-select">
-                                    <option value="bueno">Bueno</option>
-                                    <option value="regular">Regular</option>
-                                    <option value="malo">Malo</option>
-                                </select>
+                            <div class="col-12">
+                                <label>Estado Físico del Equipo</label>
+                                <div class="d-flex gap-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="pcEstado" value="bueno" checked>
+                                        <label class="form-check-label">Bueno</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="pcEstado" value="regular">
+                                        <label class="form-check-label">Regular</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="pcEstado" value="malo">
+                                        <label class="form-check-label">Malo</label>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
 
                     <!-- MONITOR -->
-                    <div id="form-monitor" class="categoria-form hidden">
-                        <h6 class="mt-3 mb-3">Especificaciones de Monitor</h6>
-                        <div class="row g-2">
+                    <div id="form-monitor" class="category-form hidden">
+                        <div class="row g-3">
                             <div class="col-md-6">
-                                <label for="monitorMarca">Marca:</label>
-                                <select id="monitorMarca" class="form-select">
+                                <label>Marca del Monitor</label>
+                                <select class="form-select" id="monitorMarca">
                                     <option value="">Seleccione</option>
                                     <option value="dell">Dell</option>
                                     <option value="hp">HP</option>
@@ -381,107 +349,256 @@
                                     <option value="lg">LG</option>
                                     <option value="acer">Acer</option>
                                     <option value="asus">ASUS</option>
-                                    <option value="otros">Otros</option>
                                 </select>
                             </div>
                             <div class="col-md-6">
-                                <label for="monitorPulgadas">Pulgadas:</label>
-                                <select id="monitorPulgadas" class="form-select">
+                                <label>Pulgadas</label>
+                                <select class="form-select" id="monitorPulgadas">
                                     <option value="">Seleccione</option>
                                     <option value="19">19"</option>
                                     <option value="22">22"</option>
                                     <option value="24">24"</option>
                                     <option value="27">27"</option>
                                     <option value="32">32"</option>
-                                    <option value="34">34" (UltraWide)</option>
                                 </select>
                             </div>
                             <div class="col-12">
-                                <label>Entradas disponibles:</label>
-                                <div class="row">
-                                    <div class="col-md-3">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="entradaHDMI" value="HDMI">
-                                            <label class="form-check-label" for="entradaHDMI">HDMI</label>
-                                        </div>
+                                <label>Entradas Disponibles</label>
+                                <div class="d-flex flex-wrap gap-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="entradaHDMI">
+                                        <label class="form-check-label">HDMI</label>
                                     </div>
-                                    <div class="col-md-3">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="entradaVGA" value="VGA">
-                                            <label class="form-check-label" for="entradaVGA">VGA</label>
-                                        </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="entradaVGA">
+                                        <label class="form-check-label">VGA</label>
                                     </div>
-                                    <div class="col-md-3">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="entradaDP" value="DisplayPort">
-                                            <label class="form-check-label" for="entradaDP">DisplayPort</label>
-                                        </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="entradaDP">
+                                        <label class="form-check-label">DisplayPort</label>
                                     </div>
-                                    <div class="col-md-3">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="entradaUSBC" value="USB-C">
-                                            <label class="form-check-label" for="entradaUSBC">USB-C</label>
-                                        </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="entradaUSBC">
+                                        <label class="form-check-label">USB-C</label>
                                     </div>
                                 </div>
                             </div>
-                            <!-- ✅ Estado para monitor -->
-                            <div class="col-md-6">
-                                <label for="monitorEstado">Estado del Monitor:</label>
-                                <select id="monitorEstado" class="form-select">
-                                    <option value="bueno">Bueno</option>
-                                    <option value="regular">Regular</option>
-                                    <option value="malo">Malo</option>
-                                </select>
+                            <div class="col-12">
+                                <label>Estado Físico del Monitor</label>
+                                <div class="d-flex gap-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="monitorEstado" value="bueno" checked>
+                                        <label class="form-check-label">Bueno</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="monitorEstado" value="regular">
+                                        <label class="form-check-label">Regular</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="monitorEstado" value="malo">
+                                        <label class="form-check-label">Malo</label>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
 
                     <!-- PERIFÉRICO -->
-                    <div id="form-periferico" class="categoria-form hidden">
-                        <h6 class="mt-3 mb-3">Especificaciones de Periférico</h6>
-                        <div class="row g-2">
+                    <div id="form-periferico" class="category-form hidden">
+                        <div class="row g-3">
                             <div class="col-md-6">
-                                <label for="perifericoTipo">Tipo:</label>
-                                <select id="perifericoTipo" class="form-select" onchange="cambiarTipoPeriferico()">
+                                <label>Tipo de Periférico</label>
+                                <select class="form-select" id="perifericoTipo">
                                     <option value="">Seleccione</option>
                                     <option value="mouse">Mouse</option>
                                     <option value="teclado">Teclado</option>
                                     <option value="audifonos">Audífonos</option>
-                                    <option value="parlantes">Parlantes</option>
                                     <option value="webcam">Webcam</option>
+                                    <option value="parlantes">Parlantes</option>
                                 </select>
                             </div>
                             <div class="col-md-6">
-                                <label for="perifericoMarca">Marca:</label>
-                                <select id="perifericoMarca" class="form-select">
-                                    <option value="">Seleccione tipo primero</option>
-                                </select>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="perifericoConectividad">Conectividad:</label>
-                                <select id="perifericoConectividad" class="form-select">
+                                <label>Marca</label>
+                                <select class="form-select" id="perifericoMarca">
                                     <option value="">Seleccione</option>
-                                    <option value="alámbrico">Alámbrico</option>
-                                    <option value="inalámbrico">Inalámbrico (2.4 GHz)</option>
-                                    <option value="bluetooth">Bluetooth</option>
-                                    <option value="usb">USB (plug & play)</option>
+                                    <option value="logitech">Logitech</option>
+                                    <option value="razer">Razer</option>
+                                    <option value="corsair">Corsair</option>
+                                    <option value="steelseries">SteelSeries</option>
+                                    <option value="hyperx">HyperX</option>
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <label>Estado Físico del Periférico</label>
+                                <div class="d-flex gap-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="perifericoEstado" value="bueno" checked>
+                                        <label class="form-check-label">Bueno</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="perifericoEstado" value="regular">
+                                        <label class="form-check-label">Regular</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="perifericoEstado" value="malo">
+                                        <label class="form-check-label">Malo</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- IMPRESORA -->
+                    <div id="form-impresora" class="category-form hidden">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label>Tipo de Impresora</label>
+                                <select class="form-select" id="impresoraTipo">
+                                    <option value="">Seleccione</option>
+                                    <option value="laser">Láser</option>
+                                    <option value="inyeccion">Inyección</option>
+                                    <option value="multifuncional">Multifuncional</option>
                                 </select>
                             </div>
                             <div class="col-md-6">
-                                <label for="perifericoEstado">Estado:</label>
-                                <select id="perifericoEstado" class="form-select">
-                                    <option value="bueno">Bueno</option>
-                                    <option value="regular">Regular</option>
-                                    <option value="malo">Malo</option>
+                                <label>Marca</label>
+                                <select class="form-select" id="impresoraMarca">
+                                    <option value="">Seleccione</option>
+                                    <option value="hp">HP</option>
+                                    <option value="epson">Epson</option>
+                                    <option value="canon">Canon</option>
+                                    <option value="brother">Brother</option>
                                 </select>
+                            </div>
+                            <div class="col-12">
+                                <label>Estado Físico de la Impresora</label>
+                                <div class="d-flex gap-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="impresoraEstado" value="bueno" checked>
+                                        <label class="form-check-label">Bueno</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="impresoraEstado" value="regular">
+                                        <label class="form-check-label">Regular</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="impresoraEstado" value="malo">
+                                        <label class="form-check-label">Malo</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TABLET -->
+                    <div id="form-tablet" class="category-form hidden">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label>Tipo de Tablet</label>
+                                <select class="form-select" id="tabletTipo">
+                                    <option value="">Seleccione</option>
+                                    <option value="ipad">iPad</option>
+                                    <option value="android">Android</option>
+                                    <option value="windows">Windows</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label>Marca</label>
+                                <select class="form-select" id="tabletMarca">
+                                    <option value="">Seleccione</option>
+                                    <option value="apple">Apple</option>
+                                    <option value="samsung">Samsung</option>
+                                    <option value="huawei">Huawei</option>
+                                    <option value="lenovo">Lenovo</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label>Almacenamiento</label>
+                                <select class="form-select" id="tabletAlmacenamiento">
+                                    <option value="">Seleccione</option>
+                                    <option value="32GB">32 GB</option>
+                                    <option value="64GB">64 GB</option>
+                                    <option value="128GB">128 GB</option>
+                                    <option value="256GB">256 GB</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label>RAM</label>
+                                <select class="form-select" id="tabletRAM">
+                                    <option value="">Seleccione</option>
+                                    <option value="2GB">2 GB</option>
+                                    <option value="3GB">3 GB</option>
+                                    <option value="4GB">4 GB</option>
+                                    <option value="6GB">6 GB</option>
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <label>Estado Físico de la Tablet</label>
+                                <div class="d-flex gap-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="tabletEstado" value="bueno" checked>
+                                        <label class="form-check-label">Bueno</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="tabletEstado" value="regular">
+                                        <label class="form-check-label">Regular</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="tabletEstado" value="malo">
+                                        <label class="form-check-label">Malo</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- RED -->
+                    <div id="form-red" class="category-form hidden">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label>Tipo de Equipo de Red</label>
+                                <select class="form-select" id="redTipo">
+                                    <option value="">Seleccione</option>
+                                    <option value="router">Router</option>
+                                    <option value="switch">Switch</option>
+                                    <option value="punto-acceso">Punto de Acceso</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label>Marca</label>
+                                <select class="form-select" id="redMarca">
+                                    <option value="">Seleccione</option>
+                                    <option value="tp-link">TP-Link</option>
+                                    <option value="netgear">Netgear</option>
+                                    <option value="cisco">Cisco</option>
+                                    <option value="huawei">Huawei</option>
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <label>Estado Físico del Equipo</label>
+                                <div class="d-flex gap-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="redEstado" value="bueno" checked>
+                                        <label class="form-check-label">Bueno</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="redEstado" value="regular">
+                                        <label class="form-check-label">Regular</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="redEstado" value="malo">
+                                        <label class="form-check-label">Malo</label>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer">
+                <div class="modal-footer border-0 pt-0">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary" onclick="guardarNuevoInstrumento()">Guardar Instrumento</button>
+                    <button type="button" class="btn btn-primary" onclick="guardarNuevoArticulo()">
+                        <i class="fas fa-save me-1"></i> Registrar Equipo
+                    </button>
                 </div>
             </div>
         </div>
